@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace PopisStanovnistva
 {
@@ -11,10 +12,10 @@ namespace PopisStanovnistva
             {
                 { "52661241828", ("Ante Antic", new DateTime(2002, 02, 02)) },
                 { "01588425197", ("Marko Markic", new DateTime(2002, 02, 02)) },
-                { "47074601429", ("Ana Anic", new DateTime(2001, 03, 03)) },
-                { "69053261356", ("Marija Maric", new DateTime(1999, 05, 06)) },
+                { "47074601429", ("Ana Anic", new DateTime(2002, 02, 03)) },
+                { "69053261356", ("Marija Maric", new DateTime(1995, 05, 06)) },
                 { "20296932573", ("Ante Neantic", new DateTime(2003, 04, 05)) },
-                { "70490225881", ("Kazimir Kazimirovic", new DateTime(1945, 11, 07)) },
+                { "70490225881", ("Kazimir Kazimirovic", new DateTime(1990, 11, 07)) },
             };
             int izbornik = 0;
             bool izlaz = false;
@@ -50,15 +51,19 @@ namespace PopisStanovnistva
                         }, izbornik);
                         break;
                     case 11:
-                        Console.WriteLine("TODO");
+                        IspisStanovnika(popis);
                         izbornik = Odabir(Array.Empty<string>(), izbornik);
                         break;
                     case 12:
-                        Console.WriteLine("TODO");
+                        IspisStanovnika(popis
+                                .OrderBy(x => x.Value.dateOfBirth.ToString("yyyy-MM-dd"))
+                                .ToDictionary(x => x.Key, x => x.Value));
                         izbornik = Odabir(Array.Empty<string>(), izbornik);
                         break;
                     case 13:
-                        Console.WriteLine("TODO");
+                        IspisStanovnika(popis
+                            .OrderByDescending(x => x.Value.dateOfBirth.ToString("yyyy-MM-dd"))
+                            .ToDictionary(x => x.Key, x => x.Value));
                         izbornik = Odabir(Array.Empty<string>(), izbornik);
                         break;
                     case 2:
@@ -198,6 +203,34 @@ namespace PopisStanovnistva
                 odabir += prosli_odabir * 10;
 
             return odabir;
+        }
+
+        static void IspisStanovnika(Dictionary<string, (string nameAndSurname, DateTime dateOfBirth)>  popis)
+        {
+            Console.WriteLine(
+                "OIB".PadRight(11) + " | " +
+                "Ime i prezime".PadRight(30) +
+                " | Datum rođenja"
+            );
+            Console.WriteLine("----------- | ------------------------------ | -------------");
+            foreach(var stanovnik in popis)
+            {
+                Console.ForegroundColor = Zaposlenost(stanovnik.Value.dateOfBirth) ? ConsoleColor.Green : ConsoleColor.Red;
+                Console.WriteLine(
+                    stanovnik.Key.PadRight(11) + " | " +
+                    stanovnik.Value.nameAndSurname.PadRight(30) +
+                    " | " + stanovnik.Value.dateOfBirth.ToString("dd. MM. yyyy.")
+                );
+            }
+            Console.ResetColor();
+        }
+
+        static bool Zaposlenost(DateTime date)
+        {
+            int starost = DateTime.Now.Year - date.Year;
+            if (DateTime.Now < date.AddYears(starost))
+                starost -= 1;
+            return (starost > 23 && starost < 65);
         }
     }
 }
