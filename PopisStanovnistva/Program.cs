@@ -9,7 +9,7 @@ namespace PopisStanovnistva
         {
             var popis = new Dictionary<string, (string nameAndSurname, DateTime dateOfBirth)>
             {
-                { "52661241828", ("Ante Antic", new DateTime(2002, 01, 01)) },
+                { "52661241828", ("Ante Antic", new DateTime(2002, 02, 02)) },
                 { "01588425197", ("Marko Markic", new DateTime(2002, 02, 02)) },
                 { "47074601429", ("Ana Anic", new DateTime(2001, 03, 03)) },
                 { "69053261356", ("Marija Maric", new DateTime(1999, 05, 06)) },
