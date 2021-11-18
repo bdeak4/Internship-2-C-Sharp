@@ -6,7 +6,21 @@ namespace PopisStanovnistva
     {
         static void Main(string[] args)
         {
-            Console.WriteLine(Izbornik(1));
+            int odabir = 0;
+            int izlaz = 0;
+            while (izlaz != 1) {
+                switch (odabir)
+                {
+                    case 0:
+                        odabir = Izbornik(0);
+                        if (odabir == 0)
+                        {
+                            izlaz = 1;
+                        }
+                        Console.WriteLine("Izlaz iz aplikacije");
+                        break;
+                }
+            }
         }
 
         static int Izbornik(int sifra)
