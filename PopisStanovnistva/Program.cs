@@ -232,7 +232,10 @@ namespace PopisStanovnistva
                         }, izbornik);
                         break;
                     case 91:
-                        Console.WriteLine("TODO");
+                        int broj_zaposlenih = popis.Where(i => Zaposlenost(i.Value.dateOfBirth)).ToList().Count();
+                        int postotak_zaposlenih = (int)((float)broj_zaposlenih / popis.Count() * 100);
+                        Console.WriteLine("Postotak zaposlenih: " + postotak_zaposlenih + "%");
+                        Console.WriteLine("Postotak nezaposlenih: " + (100-postotak_zaposlenih) + "%");
                         izbornik = Odabir(Array.Empty<string>(), izbornik);
                         break;
                     case 92:
