@@ -11,6 +11,7 @@ namespace PopisStanovnistva
             var popis = new Dictionary<string, (string nameAndSurname, DateTime dateOfBirth)>
             {
                 { "52661241828", ("Ante Antic", new DateTime(2002, 02, 02)) },
+                { "52661241829", ("Ante Antic", new DateTime(2002, 02, 02)) },
                 { "01588425197", ("Marko Markic", new DateTime(2002, 02, 02)) },
                 { "47074601429", ("Ana Anic", new DateTime(2002, 02, 03)) },
                 { "69053261356", ("Marija Maric", new DateTime(1995, 05, 06)) },
@@ -67,11 +68,25 @@ namespace PopisStanovnistva
                         izbornik = Odabir(Array.Empty<string>(), izbornik);
                         break;
                     case 2:
-                        Console.WriteLine("TODO");
+                        string oib = PitajOIB("Unesite OIB stanovnika: ");
+                        if (popis.ContainsKey(oib))
+                            IspisStanovnika(popis
+                                .Where(i => i.Key == oib)
+                                .ToDictionary(i => i.Key, i => i.Value));
+                        else
+                            Console.WriteLine("Stanovnik sa unesenim OIBom nije pronaden.");
                         izbornik = Odabir(Array.Empty<string>(), izbornik);
                         break;
                     case 3:
-                        Console.WriteLine("TODO");
+                        string ime = PitajStr("Unesite ime stanovnika: ").Trim().ToLower();
+                        string prezime = PitajStr("Unesite prezime stanovnika: ").Trim().ToLower();
+                        DateTime bday = PitajDatum("Unesite datum rođenja: ");
+                        var results = popis
+                                .Where(i => i.Value.nameAndSurname.ToLower() == (ime + " " + prezime) &&
+                                            i.Value.dateOfBirth == bday)
+                                .ToDictionary(i => i.Key, i => i.Value);
+                        if (results.Count > 0) IspisStanovnika(results);
+                        else Console.WriteLine("Nema stanovnika koji zadovoljavaju kriterije.");
                         izbornik = Odabir(Array.Empty<string>(), izbornik);
                         break;
                     case 4:
@@ -232,5 +247,60 @@ namespace PopisStanovnistva
                 starost -= 1;
             return (starost > 23 && starost < 65);
         }
+
+        static string PitajOIB(string prompt)
+        {
+            Console.Write(prompt);
+            string oib = Console.ReadLine();
+            while (!IsDigitsOnly(oib) || oib.Length != 11)
+            {
+                Console.WriteLine("OIB mora sadrzavati samo brojeve i imati 11 znamenki.");
+                Console.Write(prompt);
+                oib = Console.ReadLine();
+            }
+            return oib;
+        }
+
+        static bool IsDigitsOnly(string str)
+        {
+            foreach (char c in str)
+            {
+                if (c < '0' || c > '9')
+                    return false;
+            }
+            return true;
+        }
+
+        static string PitajStr(string prompt)
+        {
+            Console.Write(prompt);
+            string str = Console.ReadLine();
+            while (str.Length == 0)
+            {
+                Console.WriteLine("Unos ne smije biti prazan.");
+                Console.Write(prompt);
+                str = Console.ReadLine();
+            }
+            return str;
+        }
+
+        static DateTime PitajDatum(string prompt)
+        {
+            Console.Write(prompt);
+            bool success = DateTime.TryParseExact(
+                Console.ReadLine(),
+                "dd. MM. yyyy.",
+                System.Globalization.CultureInfo.InvariantCulture,
+                System.Globalization.DateTimeStyles.None,
+                out DateTime datum);
+            while (!success)
+            {
+                Console.WriteLine("Datum mora biti u formatu \"dd. mm. gggg.\".");
+                Console.Write(prompt);
+                success = DateTime.TryParse(Console.ReadLine(), out datum);
+            }
+            return datum;
+        }
+
     }
 }
