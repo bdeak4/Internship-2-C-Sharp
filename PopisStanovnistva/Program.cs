@@ -232,39 +232,105 @@ namespace PopisStanovnistva
                         }, izbornik);
                         break;
                     case 91:
-                        Console.WriteLine("TODO");
+                        int broj_zaposlenih = popis.Where(i => Zaposlenost(i.Value.dateOfBirth)).ToList().Count();
+                        int postotak_zaposlenih = (int)((float)broj_zaposlenih / popis.Count() * 100);
+                        Console.WriteLine("Postotak zaposlenih: " + postotak_zaposlenih + "%");
+                        Console.WriteLine("Postotak nezaposlenih: " + (100-postotak_zaposlenih) + "%");
                         izbornik = Odabir(Array.Empty<string>(), izbornik);
                         break;
                     case 92:
-                        Console.WriteLine("TODO");
+                        var name_count = new Dictionary<string, int> { };
+                        foreach (var stanovnik in popis)
+                        {
+                            string ime_stanovnika = stanovnik.Value.nameAndSurname.Split(" ")[0];
+                            if (name_count.ContainsKey(ime_stanovnika)) name_count[ime_stanovnika] += 1;
+                            else name_count[ime_stanovnika] = 1;
+                        }
+                        var common_name = name_count.OrderByDescending(x => x.Value).ToList()[0];
+                        Console.WriteLine("Najcesce ime \""+common_name.Key+"\" ponavlja se "+common_name.Value+" puta");
                         izbornik = Odabir(Array.Empty<string>(), izbornik);
                         break;
                     case 93:
-                        Console.WriteLine("TODO");
+                        var surname_count = new Dictionary<string, int> { };
+                        foreach (var stanovnik in popis)
+                        {
+                            string prezime_stanovnika = stanovnik.Value.nameAndSurname.Split(" ")[1];
+                            if (surname_count.ContainsKey(prezime_stanovnika)) surname_count[prezime_stanovnika] += 1;
+                            else surname_count[prezime_stanovnika] = 1;
+                        }
+                        var common_surname = surname_count.OrderByDescending(x => x.Value).ToList()[0];
+                        Console.WriteLine("Najcesce prezime \"" + common_surname.Key + "\" ponavlja se " + common_surname.Value + " puta");
                         izbornik = Odabir(Array.Empty<string>(), izbornik);
                         break;
                     case 94:
-                        Console.WriteLine("TODO");
+                        var bday_count = new Dictionary<DateTime, int> { };
+                        foreach (var stanovnik in popis)
+                        {
+                            DateTime bday_stanovnika = stanovnik.Value.dateOfBirth;
+                            if (bday_count.ContainsKey(bday_stanovnika)) bday_count[bday_stanovnika] += 1;
+                            else bday_count[bday_stanovnika] = 1;
+                        }
+                        var common_bday = bday_count.OrderByDescending(x => x.Value).ToList()[0];
+                        Console.WriteLine("Najcesci datum rođenja \"" + common_bday.Key.ToString("dd. MM. yyyy.") + "\" ponavlja se " + common_bday.Value + " puta");
                         izbornik = Odabir(Array.Empty<string>(), izbornik);
                         break;
                     case 95:
-                        Console.WriteLine("TODO");
+                        var season_count = new Dictionary<string, int>
+                        {
+                            {"proljece", 0},
+                            {"ljeto", 0},
+                            {"jesen", 0},
+                            {"zima", 0},
+                        };
+                        foreach (var stanovnik in popis)
+                        {
+                            float d = stanovnik.Value.dateOfBirth.Month + ((float)stanovnik.Value.dateOfBirth.Day / 100);
+                            if (d < 3.21 || d > 12.21) season_count["zima"] += 1;
+                            else if (d < 6.21) season_count["proljece"] += 1;
+                            else if (d < 9.23) season_count["ljeto"] += 1;
+                            else season_count["jesen"] += 1;
+                        }
+                        foreach (var season in season_count.OrderByDescending(x => x.Value).ToList())
+                        {
+                            Console.WriteLine("Godisnje doba: " + season.Key + ", rođeno " + season.Value + " stanovnika");
+                        }
                         izbornik = Odabir(Array.Empty<string>(), izbornik);
                         break;
                     case 96:
-                        Console.WriteLine("TODO");
+                        var najmladi_oib = popis.OrderByDescending(x => x.Value.dateOfBirth).ToList()[0].Key;
+                        IspisStanovnika(popis
+                                .Where(i => i.Key == najmladi_oib)
+                                .ToDictionary(i => i.Key, i => i.Value));
                         izbornik = Odabir(Array.Empty<string>(), izbornik);
                         break;
                     case 97:
-                        Console.WriteLine("TODO");
+                        var najstariji_oib = popis.OrderBy(x => x.Value.dateOfBirth).ToList()[0].Key;
+                        IspisStanovnika(popis
+                                .Where(i => i.Key == najstariji_oib)
+                                .ToDictionary(i => i.Key, i => i.Value));
                         izbornik = Odabir(Array.Empty<string>(), izbornik);
                         break;
                     case 98:
-                        Console.WriteLine("TODO");
+                        int sum = 0;
+                        foreach(var stanovnik in popis)
+                        {
+                            int starost = DateTime.Now.Year - stanovnik.Value.dateOfBirth.Year;
+                            if (DateTime.Now < stanovnik.Value.dateOfBirth.AddYears(starost)) starost -= 1;
+                            sum += starost;
+                        }
+                        Console.WriteLine("Prosječan broj godina: " + ((float)sum / popis.Count()).ToString("0.00"));
                         izbornik = Odabir(Array.Empty<string>(), izbornik);
                         break;
                     case 99:
-                        Console.WriteLine("TODO");
+                        var starosti = new List<int> { };
+                        foreach (var stanovnik in popis)
+                        {
+                            int starost = DateTime.Now.Year - stanovnik.Value.dateOfBirth.Year;
+                            if (DateTime.Now < stanovnik.Value.dateOfBirth.AddYears(starost)) starost -= 1;
+                            starosti.Add(starost);
+                        }
+                        starosti.Sort();
+                        Console.WriteLine("Medijan godina: " + starosti[starosti.Count / 2]);
                         izbornik = Odabir(Array.Empty<string>(), izbornik);
                         break;
                     case 10:
@@ -337,8 +403,7 @@ namespace PopisStanovnistva
         static bool Zaposlenost(DateTime date)
         {
             int starost = DateTime.Now.Year - date.Year;
-            if (DateTime.Now < date.AddYears(starost))
-                starost -= 1;
+            if (DateTime.Now < date.AddYears(starost)) starost -= 1;
             return (starost > 23 && starost < 65);
         }
 
