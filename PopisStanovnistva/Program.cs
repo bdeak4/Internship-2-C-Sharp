@@ -275,7 +275,25 @@ namespace PopisStanovnistva
                         izbornik = Odabir(Array.Empty<string>(), izbornik);
                         break;
                     case 95:
-                        Console.WriteLine("TODO");
+                        var season_count = new Dictionary<string, int>
+                        {
+                            {"proljece", 0},
+                            {"ljeto", 0},
+                            {"jesen", 0},
+                            {"zima", 0},
+                        };
+                        foreach (var stanovnik in popis)
+                        {
+                            float d = stanovnik.Value.dateOfBirth.Month + ((float)stanovnik.Value.dateOfBirth.Day / 100);
+                            if (d < 3.21 || d > 12.21) season_count["zima"] += 1;
+                            else if (d < 6.21) season_count["proljece"] += 1;
+                            else if (d < 9.23) season_count["ljeto"] += 1;
+                            else season_count["jesen"] += 1;
+                        }
+                        foreach (var season in season_count.OrderByDescending(x => x.Value).ToList())
+                        {
+                            Console.WriteLine("Godisnje doba: " + season.Key + ", rođeno " + season.Value + " stanovnika");
+                        }
                         izbornik = Odabir(Array.Empty<string>(), izbornik);
                         break;
                     case 96:
