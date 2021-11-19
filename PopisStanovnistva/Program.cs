@@ -341,7 +341,10 @@ namespace PopisStanovnistva
                         }, izbornik);
                         break;
                     case 101:
-                        Console.WriteLine("TODO");
+                        popis = popis
+                                .OrderBy(x => x.Value.nameAndSurname.Split(" ")[1])
+                                .ToDictionary(x => x.Key, x => x.Value);
+                        Console.WriteLine("Popis uspjesno sortiran");
                         izbornik = Odabir(Array.Empty<string>(), izbornik);
                         break;
                     case 102:
