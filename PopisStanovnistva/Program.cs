@@ -297,19 +297,40 @@ namespace PopisStanovnistva
                         izbornik = Odabir(Array.Empty<string>(), izbornik);
                         break;
                     case 96:
-                        Console.WriteLine("TODO");
+                        var najmladi_oib = popis.OrderByDescending(x => x.Value.dateOfBirth).ToList()[0].Key;
+                        IspisStanovnika(popis
+                                .Where(i => i.Key == najmladi_oib)
+                                .ToDictionary(i => i.Key, i => i.Value));
                         izbornik = Odabir(Array.Empty<string>(), izbornik);
                         break;
                     case 97:
-                        Console.WriteLine("TODO");
+                        var najstariji_oib = popis.OrderBy(x => x.Value.dateOfBirth).ToList()[0].Key;
+                        IspisStanovnika(popis
+                                .Where(i => i.Key == najstariji_oib)
+                                .ToDictionary(i => i.Key, i => i.Value));
                         izbornik = Odabir(Array.Empty<string>(), izbornik);
                         break;
                     case 98:
-                        Console.WriteLine("TODO");
+                        int sum = 0;
+                        foreach(var stanovnik in popis)
+                        {
+                            int starost = DateTime.Now.Year - stanovnik.Value.dateOfBirth.Year;
+                            if (DateTime.Now < stanovnik.Value.dateOfBirth.AddYears(starost)) starost -= 1;
+                            sum += starost;
+                        }
+                        Console.WriteLine("Prosječan broj godina: " + ((float)sum / popis.Count()).ToString("0.00"));
                         izbornik = Odabir(Array.Empty<string>(), izbornik);
                         break;
                     case 99:
-                        Console.WriteLine("TODO");
+                        var starosti = new List<int> { };
+                        foreach (var stanovnik in popis)
+                        {
+                            int starost = DateTime.Now.Year - stanovnik.Value.dateOfBirth.Year;
+                            if (DateTime.Now < stanovnik.Value.dateOfBirth.AddYears(starost)) starost -= 1;
+                            starosti.Add(starost);
+                        }
+                        starosti.Sort();
+                        Console.WriteLine("Medijan godina: " + starosti[starosti.Count / 2]);
                         izbornik = Odabir(Array.Empty<string>(), izbornik);
                         break;
                     case 10:
@@ -382,8 +403,7 @@ namespace PopisStanovnistva
         static bool Zaposlenost(DateTime date)
         {
             int starost = DateTime.Now.Year - date.Year;
-            if (DateTime.Now < date.AddYears(starost))
-                starost -= 1;
+            if (DateTime.Now < date.AddYears(starost)) starost -= 1;
             return (starost > 23 && starost < 65);
         }
 
