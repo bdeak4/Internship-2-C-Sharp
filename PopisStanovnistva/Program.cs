@@ -239,11 +239,27 @@ namespace PopisStanovnistva
                         izbornik = Odabir(Array.Empty<string>(), izbornik);
                         break;
                     case 92:
-                        Console.WriteLine("TODO");
+                        var name_count = new Dictionary<string, int> { };
+                        foreach (var stanovnik in popis)
+                        {
+                            string ime_stanovnika = stanovnik.Value.nameAndSurname.Split(" ")[0];
+                            if (name_count.ContainsKey(ime_stanovnika)) name_count[ime_stanovnika] += 1;
+                            else name_count[ime_stanovnika] = 1;
+                        }
+                        var common_name = name_count.OrderByDescending(x => x.Value).ToList()[0];
+                        Console.WriteLine("Najcesce ime \""+common_name.Key+"\" ponavlja se "+common_name.Value+" puta");
                         izbornik = Odabir(Array.Empty<string>(), izbornik);
                         break;
                     case 93:
-                        Console.WriteLine("TODO");
+                        var surname_count = new Dictionary<string, int> { };
+                        foreach (var stanovnik in popis)
+                        {
+                            string prezime_stanovnika = stanovnik.Value.nameAndSurname.Split(" ")[1];
+                            if (surname_count.ContainsKey(prezime_stanovnika)) surname_count[prezime_stanovnika] += 1;
+                            else surname_count[prezime_stanovnika] = 1;
+                        }
+                        var common_surname = surname_count.OrderByDescending(x => x.Value).ToList()[0];
+                        Console.WriteLine("Najcesce prezime \"" + common_surname.Key + "\" ponavlja se " + common_surname.Value + " puta");
                         izbornik = Odabir(Array.Empty<string>(), izbornik);
                         break;
                     case 94:
