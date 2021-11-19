@@ -170,15 +170,52 @@ namespace PopisStanovnistva
                         }, izbornik);
                         break;
                     case 81:
-                        Console.WriteLine("TODO");
+                        string edit_oib = PitajOIB("Unesite OIB stanovnika: ");
+                        if (popis.ContainsKey(edit_oib))
+                        {
+                            string edit_novi_oib = PitajOIB("Unesite novi OIB stanovnika: ");
+                            if (!popis.ContainsKey(edit_novi_oib))
+                            {
+                                if (PitajBool("Jeste li sigurni da zelite promjeniti OIB stanovnika (da/ne): "))
+                                {
+                                    var s = popis[edit_oib];
+                                    popis.Remove(edit_oib);
+                                    popis[edit_novi_oib] = s;
+                                    Console.WriteLine("OIB stanovnika uspjesno izmjenjen.");
+                                }
+                            } 
+                            else Console.WriteLine("Stanovnik sa unesenim OIBom vec postoji.");
+                        }
+                        else Console.WriteLine("Stanovnik sa unesenim OIBom ne postoji.");
                         izbornik = Odabir(Array.Empty<string>(), izbornik);
                         break;
                     case 82:
-                        Console.WriteLine("TODO");
+                        string name_edit_oib = PitajOIB("Unesite OIB stanovnika: ");
+                        if (popis.ContainsKey(name_edit_oib))
+                        {
+                            string edit_novo_ime = PitajStr("Unesite novo ime stanovnika: ").Trim();
+                            string edit_novo_prezime = PitajStr("Unesite novo prezime stanovnika: ").Trim();
+                            if (PitajBool("Jeste li sigurni da zelite promjeniti ime i prezime stanovnika (da/ne): "))
+                            {
+                                popis[name_edit_oib] = (edit_novo_ime + " " + edit_novo_prezime, popis[name_edit_oib].dateOfBirth);
+                                Console.WriteLine("Ime i prezime stanovnika uspjesno izmjenjeno.");
+                            }
+                        }
+                        else Console.WriteLine("Stanovnik sa unesenim OIBom ne postoji.");
                         izbornik = Odabir(Array.Empty<string>(), izbornik);
                         break;
                     case 83:
-                        Console.WriteLine("TODO");
+                        string bday_edit_oib = PitajOIB("Unesite OIB stanovnika: ");
+                        if (popis.ContainsKey(bday_edit_oib))
+                        {
+                            DateTime edit_novi_bday = PitajDatum("Unesite novi datum rođenja (dd. mm. yyyy.): ");
+                            if (PitajBool("Jeste li sigurni da zelite promjeniti datum rođenja stanovnika (da/ne): "))
+                            {
+                                popis[bday_edit_oib] = (popis[bday_edit_oib].nameAndSurname, edit_novi_bday);
+                                Console.WriteLine("Datum rođenja stanovnika uspjesno izmjenjen.");
+                            }
+                        }
+                        else Console.WriteLine("Stanovnik sa unesenim OIBom ne postoji.");
                         izbornik = Odabir(Array.Empty<string>(), izbornik);
                         break;
                     case 9:
