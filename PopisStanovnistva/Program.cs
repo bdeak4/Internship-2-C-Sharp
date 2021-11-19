@@ -80,7 +80,7 @@ namespace PopisStanovnistva
                     case 3:
                         string ime = PitajStr("Unesite ime stanovnika: ").Trim().ToLower();
                         string prezime = PitajStr("Unesite prezime stanovnika: ").Trim().ToLower();
-                        DateTime bday = PitajDatum("Unesite datum rođenja: ");
+                        DateTime bday = PitajDatum("Unesite datum rođenja (dd. mm. yyyy.): ");
                         var results = popis
                                 .Where(i => i.Value.nameAndSurname.ToLower() == (ime + " " + prezime) &&
                                             i.Value.dateOfBirth == bday)
@@ -90,7 +90,19 @@ namespace PopisStanovnistva
                         izbornik = Odabir(Array.Empty<string>(), izbornik);
                         break;
                     case 4:
-                        Console.WriteLine("TODO");
+                        string novi_oib = PitajOIB("Unesite OIB novog stanovnika: ");
+                        string novo_ime = PitajStr("Unesite ime novog stanovnika: ").Trim();
+                        string novo_prezime = PitajStr("Unesite prezime novog stanovnika: ").Trim();
+                        DateTime novi_bday = PitajDatum("Unesite datum rođenja novog stanovnika (dd. mm. yyyy.): ");
+                        if (!popis.ContainsKey(novi_oib))
+                        {
+                            popis.Add(novi_oib, (novo_ime + " " + novo_prezime, novi_bday));
+                            Console.WriteLine("Stanovnik uspjesno unesen.");
+                            IspisStanovnika(popis
+                                .Where(i => i.Key == novi_oib)
+                                .ToDictionary(i => i.Key, i => i.Value));
+                        }
+                        else Console.WriteLine("Stanovnik sa unesenim OIBom vec postoji.");
                         izbornik = Odabir(Array.Empty<string>(), izbornik);
                         break;
                     case 5:
