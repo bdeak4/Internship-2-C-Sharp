@@ -263,7 +263,15 @@ namespace PopisStanovnistva
                         izbornik = Odabir(Array.Empty<string>(), izbornik);
                         break;
                     case 94:
-                        Console.WriteLine("TODO");
+                        var bday_count = new Dictionary<DateTime, int> { };
+                        foreach (var stanovnik in popis)
+                        {
+                            DateTime bday_stanovnika = stanovnik.Value.dateOfBirth;
+                            if (bday_count.ContainsKey(bday_stanovnika)) bday_count[bday_stanovnika] += 1;
+                            else bday_count[bday_stanovnika] = 1;
+                        }
+                        var common_bday = bday_count.OrderByDescending(x => x.Value).ToList()[0];
+                        Console.WriteLine("Najcesci datum rođenja \"" + common_bday.Key.ToString("dd. MM. yyyy.") + "\" ponavlja se " + common_bday.Value + " puta");
                         izbornik = Odabir(Array.Empty<string>(), izbornik);
                         break;
                     case 95:
