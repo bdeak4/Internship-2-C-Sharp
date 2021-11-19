@@ -336,8 +336,8 @@ namespace PopisStanovnistva
                     case 10:
                         izbornik = Odabir(new string[] {
                             "Abecedno po prezimenima",
-                            "Po datumu rođenja",
-                            "Silazno",
+                            "Po datumu rođenja (uzlazno)",
+                            "Po datumu rođenja (silazno)",
                         }, izbornik);
                         break;
                     case 101:
@@ -348,11 +348,17 @@ namespace PopisStanovnistva
                         izbornik = Odabir(Array.Empty<string>(), izbornik);
                         break;
                     case 102:
-                        Console.WriteLine("TODO");
+                        popis = popis
+                                .OrderBy(x => x.Value.dateOfBirth.ToString("yyyy-MM-dd"))
+                                .ToDictionary(x => x.Key, x => x.Value);
+                        Console.WriteLine("Popis uspjesno sortiran");
                         izbornik = Odabir(Array.Empty<string>(), izbornik);
                         break;
                     case 103:
-                        Console.WriteLine("TODO");
+                        popis = popis
+                                .OrderByDescending(x => x.Value.dateOfBirth.ToString("yyyy-MM-dd"))
+                                .ToDictionary(x => x.Key, x => x.Value);
+                        Console.WriteLine("Popis uspjesno sortiran");
                         izbornik = Odabir(Array.Empty<string>(), izbornik);
                         break;
                 }
