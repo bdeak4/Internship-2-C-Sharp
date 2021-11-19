@@ -106,15 +106,60 @@ namespace PopisStanovnistva
                         izbornik = Odabir(Array.Empty<string>(), izbornik);
                         break;
                     case 5:
-                        Console.WriteLine("TODO");
+                        string brisanje_oib = PitajOIB("Unesite OIB stanovnika: ");
+                        if (popis.ContainsKey(brisanje_oib))
+                        {
+                            if (PitajBool("Jeste li sigurni da zelite obrisati stanovnika (da/ne): "))
+                            {
+                                popis.Remove(brisanje_oib);
+                                Console.WriteLine("Stanovnik uspjesno obrisan.");
+                            }
+                        }
+                        else Console.WriteLine("Stanovnik sa unesenim OIBom ne postoji.");
                         izbornik = Odabir(Array.Empty<string>(), izbornik);
                         break;
                     case 6:
-                        Console.WriteLine("TODO");
+                        string brisanje_ime = PitajStr("Unesite ime stanovnika: ").Trim().ToLower();
+                        string brisanje_prezime = PitajStr("Unesite prezime stanovnika: ").Trim().ToLower();
+                        DateTime brisanje_bday = PitajDatum("Unesite datum rođenja (dd. mm. yyyy.): ");
+                        var brisanje_results = popis
+                                .Where(i => i.Value.nameAndSurname.ToLower() == (brisanje_ime + " " + brisanje_prezime) &&
+                                            i.Value.dateOfBirth == brisanje_bday)
+                                .ToDictionary(i => i.Key, i => i.Value);
+                        if (brisanje_results.Count == 1)
+                        {
+                            if (PitajBool("Jeste li sigurni da zelite obrisati stanovnika (da/ne): "))
+                            {
+                                popis.Remove(brisanje_results.ToList()[0].Key);
+                                Console.WriteLine("Stanovnik uspjesno obrisan.");
+                            }
+                        }
+                        else if (brisanje_results.Count > 1)
+                        {
+                            IspisStanovnika(brisanje_results);
+                            string brisanje_results_oib = PitajOIB("Unesite OIB stanovnika: ");
+                            if (popis.ContainsKey(brisanje_results_oib))
+                            {
+                                if (PitajBool("Jeste li sigurni da zelite obrisati stanovnika (da/ne): "))
+                                {
+                                    popis.Remove(brisanje_results_oib);
+                                    Console.WriteLine("Stanovnik uspjesno obrisan.");
+                                }
+                            }
+                            else Console.WriteLine("Stanovnik sa unesenim OIBom ne postoji.");
+                        }
+                        else Console.WriteLine("Nema stanovnika koji zadovoljavaju kriterije.");
                         izbornik = Odabir(Array.Empty<string>(), izbornik);
                         break;
                     case 7:
-                        Console.WriteLine("TODO");
+                        Console.ForegroundColor = ConsoleColor.Red;
+                        if (PitajBool("Jeste li sigurni da zelite obrisati SVE stanovnike (da/ne): "))
+                        {
+                            Console.ResetColor();
+                            popis.Clear();
+                            Console.WriteLine("Svi stanovnici uspjesno obrisani.");
+                        }
+                        Console.ResetColor();
                         izbornik = Odabir(Array.Empty<string>(), izbornik);
                         break;
                     case 8:
@@ -313,6 +358,15 @@ namespace PopisStanovnistva
             }
             return datum;
         }
+
+        static bool PitajBool(string prompt)
+        {
+            Console.Write(prompt);
+            string input = Console.ReadLine();
+            if (input == "da" || input == "y" || input == "yes") return true;
+            return false;
+        }
+
 
     }
 }
